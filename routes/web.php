@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\Route;
-    use App\Http\Controllers\CompanyController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,8 +22,5 @@ Route::get('/users/company={company}', [UsersController::class, 'filterByCompany
 
 Route::get('/users/subquery', [UsersController::class, 'subQuery'])
     ->name('users.byCompany');
-
-
-
 
 Route::get('/companies', [CompanyController::class, 'index'])->name('companies.');
