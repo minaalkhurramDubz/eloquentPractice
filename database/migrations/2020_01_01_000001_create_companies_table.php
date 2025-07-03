@@ -13,7 +13,7 @@ class CreateCompaniesTable extends Migration
      */
     public function up()
     {
-        // an index on companies table 
+        // an index on companies table
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name')->index();
