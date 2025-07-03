@@ -7,7 +7,41 @@ use App\User;
 
 class UsersController extends Controller
 {
-    public function index() {}
+    public function index()
+    {
+
+        // get the search query string from the url or null (default)
+        $search = $_GET['search'] ?? null;
+
+        // build the query , eager loading associated companies
+        $users = User::query()->with('company');
+
+        // if seach not empty
+        if (! empty($search)) {
+            // break apart the search string into words
+            collect(str_getcsv($search, ' ', '"'))
+                ->filter()
+                // append with a wildcard for filtering the queries
+                ->each(function ($term) use ($users) {
+                    $term = $term.'%';
+                    // search each term individual - works faster because of combined queries due to indexing 
+                    $users->where(function ($query) use ($term) {
+                        $query->where('name', 'like', $term)
+                            ->orWhereIn('company_id', Company::query()
+                                ->where('name', 'like', $term)
+                                ->pluck('id')
+                            );
+                    });
+                });
+        }
+
+        $users = $users->paginate(20);
+
+        return view('users', [
+            'users' => $users,
+            'search' => $search,
+        ]);
+    }
 
     public function eagerLoad()
     {

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/users', [UsersController::class, 'eagerLoad']);
+Route::get('/users', [UsersController::class, 'index']);
 
 Route::get('/users/company={company}', [UsersController::class, 'filterByCompany'])
     ->name('users.byCompany');
