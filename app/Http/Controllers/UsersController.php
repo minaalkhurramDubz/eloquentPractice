@@ -21,6 +21,8 @@ class UsersController extends Controller
         return view('users', ['users' => $users]);
     }
 
+    // takes longer to run because it does not use indexes efficiently, especially if the subquery has ORDER BY, LIMIT, or lacks WHERE conditions
+
     public function subQuery()
     {
         // creating query
