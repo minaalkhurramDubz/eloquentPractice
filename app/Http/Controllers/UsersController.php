@@ -10,7 +10,11 @@ class UsersController extends Controller
     public function index()
     {
 
-        // get the search query string from the url or null (default)
+       
+    }
+public function searchwithIndividualQuery()
+{
+ // get the search query string from the url or null (default)
         $search = $_GET['search'] ?? null;
 
         // build the query , eager loading associated companies
@@ -41,7 +45,62 @@ class UsersController extends Controller
             'users' => $users,
             'search' => $search,
         ]);
+
+
+}
+
+
+public function searchWithUnion()
+{
+// Get the search term from the query string (?search=...)
+    $search = $_GET['search'] ?? null;
+
+    // Start the base query with eager loading for related company
+    $users = User::query()->with('company');
+
+    if (!empty($search)) {
+        // Break search string into terms, handling quoted values too
+        collect(str_getcsv($search, ' ', '"'))
+            ->filter()
+            ->each(function ($term) use ($users) {
+
+                // Sanitize term to remove special characters, then add SQL wildcard
+          //      $term = preg_replace('/[^A-Za-z0-9]/', '', $term) . '%';
+$term = $term . '%';
+
+                // Use subquery with UNION to find matching user IDs
+                $users->whereIn('id', function ($query) use ($term) {
+                    $query->select('id')
+                          ->from(function ($query) use ($term) {
+                              // First part of UNION: match user by name
+                              $query->select('users.id')
+                                    ->from('users')
+                                    ->where('users.name', 'like', $term)
+
+                                    // UNION with users who belong to matching company
+                                    ->union(
+                                        $query->newQuery()
+                                              ->select('users.id')
+                                              ->from('users')
+                                              ->join('companies', 'users.company_id', '=', 'companies.id')
+                                              ->where('companies.name', 'like', $term)
+                                    );
+                          }, 'matches'); // alias the subquery
+                });
+            });
     }
+
+    // Paginate the final result
+    $users = $users->paginate(20);
+
+    // Pass results and search value to the view
+    return view('users', [
+        'users' => $users,
+        'search' => $search,
+    ]);
+
+
+}
 
     public function eagerLoad()
     {
