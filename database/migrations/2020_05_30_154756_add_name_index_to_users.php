@@ -14,7 +14,7 @@ class AddNameIndexToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->index('name');
+       //     $table->index('name');
         });
     }
 
