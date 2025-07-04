@@ -7,7 +7,17 @@ use App\User;
 
 class UsersController extends Controller
 {
-    public function index() {}
+    public function index()
+    {
+        $users = User::query()
+            ->orderBy('first_name')
+            ->orderBy('last_name')
+            ->paginate();
+
+        return view('usersOnly', [
+            'users' => $users,
+        ]);
+    }
 
     public function searchwithIndividualQuery()
     {

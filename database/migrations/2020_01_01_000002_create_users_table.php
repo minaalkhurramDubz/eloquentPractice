@@ -23,6 +23,10 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+
+            // adding compound index on firstname and last name
+            $table->index(['first_name', 'last_name']);
+
         });
     }
 

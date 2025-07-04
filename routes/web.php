@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 // query time : 2.3
 Route::get('/users', [UsersController::class, 'searchWithUnion']);
 
+Route::get('/usersonly', [UsersController::class, 'index']);
 /*
 Route::get('/users/company={company}', [UsersController::class, 'filterByCompany'])
     ->name('users.byCompany');
