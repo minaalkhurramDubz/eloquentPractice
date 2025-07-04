@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// query time:2.32 , 2mb 
+// query time:2.32 , 2mb
 // Route::get('/users', [UsersController::class, 'searchwithIndividualQuery']);
 
 // query time : 2.3
